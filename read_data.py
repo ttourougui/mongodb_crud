@@ -8,6 +8,8 @@ from boto3.dynamodb.conditions import Key
 from botocore.exceptions import ClientError
 import sys
 
+from create_table import table_name
+
 logging.basicConfig(level = logging.INFO)
 
 def get_char_by_id_name(table_name, char_id, char_name, dynamodb=None):
@@ -39,7 +41,7 @@ def query_char(table_name, char_name,dynamodb=None):
 if __name__ == '__main__':
 
   char_name = input("Enter character's name: ")
-  characters = query_char('characters', char_name)
+  characters = query_char(table_name, char_name)
   if characters:
     for char in characters:
       print(char)

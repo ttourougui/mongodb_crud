@@ -7,8 +7,9 @@ from read_data import get_char_by_id_name
 import boto3
 from boto3.dynamodb.conditions import Key
 from botocore.exceptions import ClientError
-
 import sys
+
+from create_table import table_name
 
 logging.basicConfig(level = logging.INFO)
 
@@ -42,7 +43,7 @@ def delete_character(table_name, char_id, name, dynamodb=None):
 
 if __name__ == '__main__':
 
-  table_name = 'characters'
+
   char_id = input('Enter character ID: ')
   name = input('Enter character name: ')
 

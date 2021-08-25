@@ -10,6 +10,8 @@ import boto3
 import time
 from botocore.exceptions import ClientError
 
+from create_table import table_name
+
 
 logging.basicConfig(level = logging.INFO)
 
@@ -17,7 +19,7 @@ logging.basicConfig(level = logging.INFO)
 def write_char(data, table_name, dynamodb=None):
   if not dynamodb:
     dynamodb = boto3.resource('dynamodb', region_name='eu-central-1')
-    
+
   table = dynamodb.Table(table_name)
   if get_char_by_id_name(table_name, data['char_id'], data['name'], dynamodb): #Check if character already exist in the table
     logging.warning(data['name']+' Character already exists!')
@@ -46,9 +48,8 @@ def write_char(data, table_name, dynamodb=None):
 
 if __name__ == '__main__':
 
-  table_name = 'characters'
   new_table = None
-  if not check_table_exists('characters'): #ensure table exist and avoid table already exists error
+  if not check_table_exists(table_name): #ensure table exist and avoid table already exists error
     new_table = create_table(table_name)
 
   if new_table != None:

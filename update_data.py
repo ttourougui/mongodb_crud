@@ -8,6 +8,8 @@ from boto3.dynamodb.conditions import Key
 from botocore.exceptions import ClientError
 import sys
 
+from create_table import table_name
+
 logging.basicConfig(level = logging.INFO)
 
 def update_char_nickname(table_name, char_id, name, nickname, dynamodb=None):
@@ -40,7 +42,6 @@ def add_char_occupation(table_name, char_id, name, occupation, dynamodb=None):
 
   table = dynamodb.Table(table_name)
   try:
-    print(type(list(occupation)))
     response = table.update_item(
       Key={
           'char_id': int(char_id),
@@ -62,12 +63,12 @@ def add_char_occupation(table_name, char_id, name, occupation, dynamodb=None):
 
 
 if __name__ == '__main__':
-  table_name = 'characters'
+
   char_id = input('Enter character ID: ')
   name = input('Enter character name: ')
-  nickname = input('Enter the new nickname: ')
+  # nickname = input('Enter the new nickname: ')
   occupation = input('Enter additional character occupation: ')
 
-  update_char_nickname(table_name, char_id, name, nickname)
-  add_char_occupation(table_name, 1, name, occupation)
+  # update_char_nickname(table_name, char_id, name, nickname)
+  add_char_occupation(table_name, char_id, name, occupation)
 

@@ -4,6 +4,8 @@ import boto3
 from botocore.exceptions import ClientError
 import logging
 
+table_name = 'characters'
+
 
 def create_table(table_name, dynamodb=None):
   if not dynamodb:
@@ -61,8 +63,8 @@ def create_table(table_name, dynamodb=None):
       }
    ],
       ProvisionedThroughput={
-        'ReadCapacityUnits': 5,
-        'WriteCapacityUnits': 5
+        'ReadCapacityUnits': 1,
+        'WriteCapacityUnits': 1
       }
     )
     return response
@@ -92,5 +94,5 @@ def check_table_exists(table_name, dynamodb=None):
 
 
 if __name__ == '__main__':
-  table = create_table('characters')
+  table = create_table(table_name)
   logging.info('Table status: '+table.table_status)
