@@ -7,7 +7,7 @@ import logging
 
 def create_table(table_name, dynamodb=None):
   if not dynamodb:
-    dynamodb = boto3.resource('dynamodb', region_name="eu-central-1")
+    dynamodb = boto3.resource('dynamodb', region_name='eu-central-1')
   try:
     response = dynamodb.create_table(
       TableName=table_name,
@@ -20,6 +20,8 @@ def create_table(table_name, dynamodb=None):
             'AttributeName': 'name',
             'KeyType': 'RANGE' 
           },
+          
+
       ],
       AttributeDefinitions=[
           {
@@ -30,23 +32,49 @@ def create_table(table_name, dynamodb=None):
             'AttributeName': 'name',
             'AttributeType': 'S'
           },
-
+          {
+            'AttributeName': 'nickname',
+            'AttributeType': 'S'
+          },
       ],
+      GlobalSecondaryIndexes= [ 
+      { 
+         'IndexName': 'NameIndex',
+         'KeySchema': [ 
+            {
+              'AttributeName': 'name',
+              'KeyType': 'HASH'  
+            },
+            {
+              'AttributeName': 'nickname',
+              'KeyType': 'RANGE'  
+            },
+
+         ],
+         'Projection': { 
+            'ProjectionType': 'ALL'
+         },
+         'ProvisionedThroughput': { 
+            'ReadCapacityUnits': 1,
+            'WriteCapacityUnits': 1
+         }
+      }
+   ],
       ProvisionedThroughput={
         'ReadCapacityUnits': 5,
         'WriteCapacityUnits': 5
       }
     )
+    return response
   except ClientError as e:
     logging.error(e.response['Error']['Message'])
-  else:
-    return response
+    return
 
 
 def check_table_status(table_name, dynamodb=None):
   status = False
   if not dynamodb:
-    dynamodb = boto3.client('dynamodb', region_name="eu-central-1")
+    dynamodb = boto3.client('dynamodb', region_name='eu-central-1')
   try:
     response = dynamodb.describe_table(TableName=table_name)
     status = response['Table']['TableStatus']
@@ -57,7 +85,7 @@ def check_table_status(table_name, dynamodb=None):
 
 def check_table_exists(table_name, dynamodb=None):
   if not dynamodb:
-    dynamodb = boto3.resource('dynamodb', region_name="eu-central-1")
+    dynamodb = boto3.resource('dynamodb', region_name='eu-central-1')
   table_names = [table.name for table in dynamodb.tables.all()]
   if table_name in table_names:
     return True
@@ -65,4 +93,4 @@ def check_table_exists(table_name, dynamodb=None):
 
 if __name__ == '__main__':
   table = create_table('characters')
-  logging.info("Table status: "+table.table_status)
+  logging.info('Table status: '+table.table_status)
